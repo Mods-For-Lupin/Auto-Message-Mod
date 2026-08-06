@@ -16,6 +16,8 @@ dependencies {
       prefer '0.5.4' // The version actually used in your dev workspace
     }
   }
+
+  modImplementation "maven.modrinth:9leXt4A5:CjLpnfRF"
 }
 
 mixin {
