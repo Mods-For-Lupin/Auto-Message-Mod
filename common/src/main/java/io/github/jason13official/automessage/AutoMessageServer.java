@@ -2,6 +2,7 @@ package io.github.jason13official.automessage;
 
 import io.github.jason13official.automessage.api.common.message.MessageType;
 import io.github.jason13official.automessage.impl.common.message.ServerMessageService;
+import java.net.URI;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
@@ -11,90 +12,96 @@ import net.minecraft.world.entity.player.Player;
 
 public class AutoMessageServer {
 
-    static MinecraftServer SERVER;
+  static MinecraftServer SERVER;
 
-    public static void init(MinecraftServer server) {
+  public static void init(MinecraftServer server) {
 
-        SERVER = server;
+    SERVER = server;
 
-        ServerMessageService.load();
+    ServerMessageService.load();
+  }
+
+  public static void onFirstJoinLevel(ServerPlayer player, ServerLevel level) {
+    if (level == null || !ServerMessageService.instance.general.enabled) {
+      return;
     }
 
-    public static void onFirstJoinLevel(ServerPlayer player, ServerLevel level) {
-        if (level == null || !ServerMessageService.instance.general.enabled) return;
+    ServerMessageService.instance.ON_FIRST_JOIN_MESSAGES.forEach(message -> {
 
-        ServerMessageService.instance.ON_FIRST_JOIN_MESSAGES.forEach(message -> {
+      boolean hasTag = player.entityTags().contains(message.identifier + ".firstJoin");
 
-            boolean hasTag = player.getTags().contains(message.identifier + ".firstJoin");
+      if (message.repeats || !hasTag) {
 
-            if (message.repeats || !hasTag) {
+        if (message.type == MessageType.CHAT) {
+          if (message.link != null && !message.link.isEmpty()) {
+            player.sendSystemMessage(Component.literal(message.text.replace("%player%", player.getDisplayName().getString()).replace("%link%", message.link)).withStyle(style -> {
+              return style.withClickEvent(new ClickEvent.OpenUrl(URI.create(message.link)));
+            }));
+          } else {
+            player.sendSystemMessage(Component.literal(message.text.replace("%player%", player.getDisplayName().getString())));
+          }
+        } else {
+          player.sendOverlayMessage(Component.literal(message.text.replace("%player%", player.getDisplayName().getString())));
+        }
 
-                if (message.type == MessageType.CHAT) {
-                    if (message.link != null && !message.link.isEmpty()) {
-                        player.sendSystemMessage(
-                                Component.literal(message.text.replace("%player%", player.getDisplayName().getString()).replace("%link%", message.link)).withStyle(style -> {
-                                    return style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, message.link));
-                                })
-                        );
-                    }
-                    else player.sendSystemMessage(Component.literal(message.text.replace("%player%", player.getDisplayName().getString())));
-                }
-                else player.displayClientMessage(Component.literal(message.text.replace("%player%", player.getDisplayName().getString())), true);
+        if (!hasTag) {
+          player.addTag(message.identifier + ".firstJoin");
+        }
+      }
+    });
+  }
 
-                if (!hasTag) player.addTag(message.identifier + ".firstJoin");
-            }
-        });
+  public static void onJoinLevel(ServerPlayer player, ServerLevel level) {
+    if (level == null || !ServerMessageService.instance.general.enabled) {
+      return;
     }
+    ServerMessageService.instance.ON_JOIN_LEVEL_MESSAGES.forEach(message -> {
 
-    public static void onJoinLevel(ServerPlayer player, ServerLevel level) {
-        if (level == null || !ServerMessageService.instance.general.enabled) return;
-        ServerMessageService.instance.ON_JOIN_LEVEL_MESSAGES.forEach(message -> {
+      if (message.type == MessageType.CHAT) {
+        if (message.link != null && !message.link.isEmpty()) {
+          player.sendSystemMessage(Component.literal(message.text.replace("%player%", player.getDisplayName().getString()).replace("%link%", message.link)).withStyle(style -> {
+            return style.withClickEvent(new ClickEvent.OpenUrl(URI.create(message.link)));
+          }));
+        } else {
+          player.sendSystemMessage(Component.literal(message.text.replace("%player%", player.getDisplayName().getString())));
+        }
+      } else {
+        player.sendOverlayMessage(Component.literal(message.text.replace("%player%", player.getDisplayName().getString())));
+      }
+    });
+  }
 
-            if (message.type == MessageType.CHAT) {
-                if (message.link != null && !message.link.isEmpty()) {
-                    player.sendSystemMessage(
-                            Component.literal(message.text.replace("%player%", player.getDisplayName().getString()).replace("%link%", message.link)).withStyle(style -> {
-                                return style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, message.link));
-                            })
-                    );
-                }
-                else player.sendSystemMessage(Component.literal(message.text.replace("%player%", player.getDisplayName().getString())));
-            }
-            else player.displayClientMessage(Component.literal(message.text.replace("%player%", player.getDisplayName().getString())), true);
-        });
-    }
+  public static void onDeath(Player player) {
+    ServerMessageService.instance.ON_DEATH_MESSAGES.forEach(message -> {
 
-    public static void onDeath(Player player) {
-        ServerMessageService.instance.ON_DEATH_MESSAGES.forEach(message -> {
+      if (message.type == MessageType.CHAT) {
+        if (message.link != null && !message.link.isEmpty()) {
+          player.sendSystemMessage(Component.literal(message.text.replace("%player%", player.getDisplayName().getString()).replace("%link%", message.link)).withStyle(style -> {
+            return style.withClickEvent(new ClickEvent.OpenUrl(URI.create(message.link)));
+          }));
+        } else {
+          player.sendSystemMessage(Component.literal(message.text.replace("%player%", player.getDisplayName().getString())));
+        }
+      } else {
+        player.sendOverlayMessage(Component.literal(message.text.replace("%player%", player.getDisplayName().getString())));
+      }
+    });
+  }
 
-            if (message.type == MessageType.CHAT) {
-                    if (message.link != null && !message.link.isEmpty()) {
-                        player.sendSystemMessage(
-                                Component.literal(message.text.replace("%player%", player.getDisplayName().getString()).replace("%link%", message.link)).withStyle(style -> {
-                                    return style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, message.link));
-                                })
-                        );
-                    }
-                    else player.sendSystemMessage(Component.literal(message.text.replace("%player%", player.getDisplayName().getString())));
-                }
-            else player.displayClientMessage(Component.literal(message.text.replace("%player%", player.getDisplayName().getString())), true);
-        });
-    }
+  public static void onRespawn(ServerPlayer player) {
+    ServerMessageService.instance.ON_RESPAWN_MESSAGES.forEach(message -> {
 
-    public static void onRespawn(ServerPlayer player) {
-        ServerMessageService.instance.ON_RESPAWN_MESSAGES.forEach(message -> {
-
-            if (message.type == MessageType.CHAT) {
-                    if (message.link != null && !message.link.isEmpty()) {
-                        player.sendSystemMessage(
-                                Component.literal(message.text.replace("%player%", player.getDisplayName().getString()).replace("%link%", message.link)).withStyle(style -> {
-                                    return style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, message.link));
-                                })
-                        );
-                    }
-                    else player.sendSystemMessage(Component.literal(message.text.replace("%player%", player.getDisplayName().getString())));
-                }
-            else player.displayClientMessage(Component.literal(message.text.replace("%player%", player.getDisplayName().getString())), true);
-        });
-    }
+      if (message.type == MessageType.CHAT) {
+        if (message.link != null && !message.link.isEmpty()) {
+          player.sendSystemMessage(Component.literal(message.text.replace("%player%", player.getDisplayName().getString()).replace("%link%", message.link)).withStyle(style -> {
+            return style.withClickEvent(new ClickEvent.OpenUrl(URI.create(message.link)));
+          }));
+        } else {
+          player.sendSystemMessage(Component.literal(message.text.replace("%player%", player.getDisplayName().getString())));
+        }
+      } else {
+        player.sendOverlayMessage(Component.literal(message.text.replace("%player%", player.getDisplayName().getString())));
+      }
+    });
+  }
 }

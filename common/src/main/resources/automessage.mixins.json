@@ -9,10 +9,10 @@
   ],
   "client": [
     "LocalPlayerMixin",
-    "MinecraftMixin"
+    "MinecraftMixin",
+    "ServerPlayerMixin"
   ],
   "server": [
-    "ServerPlayerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

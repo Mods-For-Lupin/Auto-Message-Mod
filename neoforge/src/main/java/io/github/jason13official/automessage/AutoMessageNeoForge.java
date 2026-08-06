@@ -1,6 +1,8 @@
 package io.github.jason13official.automessage;
 
 import java.util.function.Consumer;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
@@ -10,6 +12,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddServerReloadListenersEvent;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 
 @Mod(Constants.MOD_ID)
 public class AutoMessageNeoForge {
@@ -21,6 +24,15 @@ public class AutoMessageNeoForge {
     EVENT_BUS = modEventBus;
 
     AutoMessage.init();
+
+    NeoForge.EVENT_BUS.addListener(AutoMessageServerNeoForge::new);
+
+    NeoForge.EVENT_BUS.addListener((Consumer<EntityJoinLevelEvent>) event -> {
+      if (!(event.getEntity() instanceof ServerPlayer serverPlayer) || !(event.getLevel() instanceof ServerLevel serverLevel)) return;
+
+      AutoMessageServer.onFirstJoinLevel(serverPlayer, serverLevel);
+      AutoMessageServer.onJoinLevel(serverPlayer, serverLevel);
+    });
 
     NeoForge.EVENT_BUS.addListener((Consumer<AddServerReloadListenersEvent>) event -> {
       event.addListener(AutoMessage.identifier(Constants.MOD_ID), new ResourceReloadListener());
