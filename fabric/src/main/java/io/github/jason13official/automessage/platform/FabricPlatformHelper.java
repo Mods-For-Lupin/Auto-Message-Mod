@@ -2,6 +2,7 @@ package io.github.jason13official.automessage.platform;
 
 import io.github.jason13official.automessage.platform.services.IPlatformHelper;
 import java.nio.file.Path;
+import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.world.item.CreativeModeTab.Builder;
@@ -30,6 +31,12 @@ public class FabricPlatformHelper implements IPlatformHelper {
   public Path getGameDirectory() {
 
     return FabricLoader.getInstance().getGameDir();
+  }
+
+  @Override
+  public boolean isClientSide() {
+
+    return FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT;
   }
 
   @Override

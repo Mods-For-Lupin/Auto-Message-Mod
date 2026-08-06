@@ -4,6 +4,6 @@ import com.google.gson.annotations.SerializedName;
 
 public enum MessageType {
 
-    @SerializedName("chat") CHAT,
-    @SerializedName("overlay") OVERLAY,
+  @SerializedName("chat") CHAT,
+  @SerializedName("overlay") OVERLAY,
 }

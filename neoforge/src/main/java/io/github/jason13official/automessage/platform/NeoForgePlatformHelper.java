@@ -4,6 +4,7 @@ import io.github.jason13official.automessage.platform.services.IPlatformHelper;
 import java.nio.file.Path;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTab.Builder;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLLoader;
 
@@ -31,6 +32,12 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
   public Path getGameDirectory() {
 
     return FMLLoader.getCurrent().getGameDir();
+  }
+
+  @Override
+  public boolean isClientSide() {
+
+    return FMLLoader.getCurrent().getDist() == Dist.CLIENT;
   }
 
   @Override
