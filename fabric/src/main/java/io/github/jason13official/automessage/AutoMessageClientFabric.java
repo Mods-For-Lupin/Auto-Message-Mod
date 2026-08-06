@@ -1,7 +1,9 @@
 package io.github.jason13official.automessage;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 
 public class AutoMessageClientFabric implements ClientModInitializer {
 
@@ -9,5 +11,15 @@ public class AutoMessageClientFabric implements ClientModInitializer {
   public void onInitializeClient() {
 
     AutoMessageClient.init(Minecraft.getInstance());
+
+    ClientEntityEvents.ENTITY_LOAD.register((entity, clientLevel) -> {
+      if (!(entity instanceof LocalPlayer player) || clientLevel == null) return;
+
+      AutoMessageClient.init(Minecraft.getInstance());
+
+      AutoMessageClient.onFirstJoinLevel(player, clientLevel);
+      AutoMessageClient.onJoinLevel(player, clientLevel);
+    });
+  }
   }
 }
