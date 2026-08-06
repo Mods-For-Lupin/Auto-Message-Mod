@@ -21,5 +21,4 @@ public class AutoMessageClientFabric implements ClientModInitializer {
       AutoMessageClient.onJoinLevel(player, clientLevel);
     });
   }
-  }
 }
