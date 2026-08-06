@@ -1,0 +1,8 @@
+{
+  "schedule":  "FIRST_JOIN",
+  "tick_interval": 0,
+  "chat_text": "Welcome to ???, the modpack!",
+  "title_text": "A Title!",
+  "subtitle_text": "(With a subtitle)",
+  "chat_link": "https://www.google.com"
+}

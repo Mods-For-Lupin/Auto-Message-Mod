@@ -1,0 +1,8 @@
+{
+  "schedule":  "DEATH",
+  "tick_interval": 0,
+  "chat_text": "You died!",
+  "title_text": "You died!",
+  "subtitle_text": "(With a subtitle)",
+  "chat_link": "https://www.google.com"
+}

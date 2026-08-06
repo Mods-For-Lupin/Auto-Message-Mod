@@ -1,0 +1,3 @@
+# Message files are loaded when the game starts and after /reload command
+# from the ../config/automessage/server directory.
+message_directory = "automessage/server"

@@ -1,0 +1,32 @@
+# Message files are loaded when the game starts and after F3+T
+# from the ../config/automessage/client directory.
+message_directory = "automessage/client"
+
+# You can alternatively define messages in this file, provided their ID
+# follows the standard format: "msg_<custom_id_here>"
+[msg_pack_intro]
+    schedule = "FIRST_JOIN" # repeats option?
+    chat_text="Test! Welcome!"
+    chat_link="https://www.google.com" #optional
+
+[msg_my_repeating]
+    schedule = "REPEAT" # repeats option?
+    tick_interval=80 #optional, required if schedule = REPEAT
+    chat_text="Every 4 seconds in chat." #optional
+    title_text="A Repeating Title!" #optional
+    subtitle_text="(With a repeating subtitle)" #optional
+    chat_link="https://www.google.com" #optional
+
+
+
+# FIRST_JOIN messages never repeat
+
+# EVERY_JOIN messages may repeat if not limited/set to not repeat
+
+# REPEAT messages repeat until limit
+
+# RANDOM messages may repeat
+
+# DEATH messages may repeat
+
+# RESPAWN messages may repeat
