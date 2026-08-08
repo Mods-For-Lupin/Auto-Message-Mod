@@ -7,6 +7,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 
@@ -14,7 +15,11 @@ public class AutoMessageClientNeoForge {
 
   public AutoMessageClientNeoForge(final IEventBus modEventBus) {
 
-    AutoMessageClient.init(Minecraft.getInstance());
+
+    modEventBus.addListener((Consumer<FMLClientSetupEvent>) event -> {
+
+      AutoMessageClient.init(Minecraft.getInstance());
+    });
 
     NeoForge.EVENT_BUS.addListener((Consumer<EntityJoinLevelEvent>) event -> {
 
